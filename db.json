@@ -10,19 +10,7 @@
       "id": "1706556237706",
       "title": "todo2",
       "date": "2024-01-29T19:23:57.706Z",
-      "completed": false
-    },
-    {
-      "id": "1706619940136",
-      "title": "todo3",
-      "date": "2024-01-30T13:05:40.136Z",
-      "completed": false
-    },
-    {
-      "id": "1706621567769",
-      "title": "todo4",
-      "date": "2024-01-30T13:32:47.769Z",
-      "completed": false
+      "completed": true
     }
   ]
 }

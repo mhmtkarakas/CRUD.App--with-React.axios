@@ -11,6 +11,40 @@ function App() {
   // For result messages
   const [resultMessage, setResultMessage] = useState("");
 
+  // todoSil function is written here
+
+  const todoSil = (id) => {
+    axios
+      .delete(`http://localhost:3004/todos/${id}`)
+      .then((response) => {
+        setResult(true);
+        setResultMessage("Silme Islemi Basarili");
+      })
+      .catch((error) => {
+        setResult(true);
+        setResultMessage("Silme Islemi Esnasinda Bir Hata Olustu");
+      });
+  };
+
+  // Todo Update function is written here
+
+  const changeTodoUpdate = (todo) => {
+    let updatedTodo = {
+      ...todo,
+      completed: !todo.completed,
+    };
+    axios
+      .put(`http://localhost:3004/todos/${todo.id}`, updatedTodo)
+      .then((response) => {
+        setResult(true);
+        setResultMessage("Todo Basari ile guncellendi");
+      })
+      .catch((error) => {
+        setResult(true);
+        setResultMessage("Guncelleme Islemi Esnasinda Bir Hata Olustu");
+      });
+  };
+
   useEffect(() => {
     axios
       .get(`http://localhost:3004/todos`)
@@ -50,7 +84,7 @@ function App() {
     axios
       .post(`http://localhost:3004/todos`, newTodo)
       .then((response) => {
-       // setTodos([...todos, newTodo]);
+        // setTodos([...todos, newTodo]);
         setTitle("");
         setResult(true);
         setResultMessage("Kayit Islemi Basarili");
@@ -110,9 +144,21 @@ function App() {
         </form>
       </div>
       {todos.map((todo) => (
-        <div key={todo.id} className="alert alert-secondary my-3 d-flex justify-content-between align-items-center" role="alert">
+        <div
+          key={todo.id}
+          className="alert alert-secondary my-3 d-flex justify-content-between align-items-center"
+          role="alert"
+        >
           <div>
-            <h1>{todo.title}</h1>
+            <h1
+              style={{
+                textDecoration:
+                  todo.completed === true ? "line-through" : "none",
+                color: todo.completed === true ? "red" : "black",
+              }}
+            >
+              {todo.title}
+            </h1>
             <p>{new Date(todo.date).toLocaleString()}</p>
           </div>
           <div>
@@ -120,10 +166,18 @@ function App() {
               <button type="button" class="btn btn-sm btn-warning">
                 Duzenle
               </button>
-              <button type="button" className="btn  btn-sm btn-danger">
+              <button
+                onClick={() => todoSil(todo.id)}
+                type="button"
+                className="btn  btn-sm btn-danger"
+              >
                 Sil
               </button>
-              <button type="button" className="btn btn-sm btn-primary">
+              <button
+                onClick={() => changeTodoUpdate(todo)}
+                type="button"
+                className="btn btn-sm btn-primary"
+              >
                 {todo.completed === true ? "Yapilmadi" : "Yapildi"}
               </button>
             </div>
