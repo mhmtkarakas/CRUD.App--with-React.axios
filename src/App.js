@@ -10,6 +10,12 @@ function App() {
   const [result, setResult] = useState(false);
   // For result messages
   const [resultMessage, setResultMessage] = useState("");
+  // For Second Todo Opening and closing checking
+  const [editInput, setEditInput] = useState(false);
+  // For will editted Todo we need a new state
+  const [editTodo, setEditTodo] = useState(null);
+  // For new Todo input we need a new state
+  const [editTitle, setEditTitle] = useState("");
 
   // todoSil function is written here
 
@@ -95,6 +101,32 @@ function App() {
       });
   };
 
+  // For Check edit form checkEditForm function is writing here
+
+  const checkEditForm = (e) => {
+    e.preventDefault();
+    // validation
+    if (editInput === "") {
+      alert("Input can't be empty");
+      return;
+    }
+    const updatedTodo = {
+      ...editTodo,
+      title: editTitle,
+    };
+    axios
+      .put(`http://localhost:3004/todos/${updatedTodo.id}`, updatedTodo)
+      .then((response) => {
+        setResult(true);
+        setResultMessage("Guncelleme Islemi Basarili");
+        setEditInput(false);
+      })
+      .catch((error) => {
+        setResult(true);
+        setResultMessage("Guncelleme Islemi esnasinda hata olustu");
+      });
+  };
+
   return (
     <div className="container my-5">
       {result === true && (
@@ -143,6 +175,33 @@ function App() {
           </div>
         </form>
       </div>
+      {/* Second Todo */}
+      {editInput === true && (
+        <div className="row">
+          <form onSubmit={checkEditForm}>
+            <div className="input-group mb-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter your working..."
+                value={editTitle}
+                onChange={(event) => setEditTitle(event.target.value)}
+              />
+              <button
+                onClick={() => setEditInput(false)}
+                className="btn btn-danger"
+                type="button"
+              >
+                Vazgec
+              </button>
+              <button className="btn btn-primary" type="submit">
+                Guncelle
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
       {todos.map((todo) => (
         <div
           key={todo.id}
@@ -163,7 +222,15 @@ function App() {
           </div>
           <div>
             <div className="btn-group" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-sm btn-warning">
+              <button
+                onClick={() => {
+                  setEditInput(true);
+                  setEditTodo(todo);
+                  setEditTitle(todo.title);
+                }}
+                type="button"
+                class="btn btn-sm btn-warning"
+              >
                 Duzenle
               </button>
               <button
